@@ -25,7 +25,10 @@ const app = express();
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-app.use(session({ secret: "fingerpint" })); // Middleware to handle sessions
+app.use(session({ 
+  secret : "fingerpint",
+  resave : false,
+  saveUninitialized : true })); // Middleware to handle sessions
 
 // Middleware to authenticate users using JWT
 app.use("/auth", function auth(req, res, next) {
@@ -71,6 +74,7 @@ app.post("/login", (req, res) => {
 app.post("/register", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+  console.log(req.body);
 
   if (username && password) {
     if (!doesExist(username)) {
@@ -80,7 +84,7 @@ app.post("/register", (req, res) => {
       return res.status(404).json({ message: "User already exists!" });
     }
   }
-  return res.status(404).json({ message: "Unable to register user." });
+  return res.status(404).json({ message: `Unable to register ${username} & ${password}` });
 });
 
 // Main endpoint to be accessed by authenticated users
